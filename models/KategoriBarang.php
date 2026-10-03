@@ -75,4 +75,3 @@ class KategoriBarang {
         return $stmt->execute();
     }
 }
-?>

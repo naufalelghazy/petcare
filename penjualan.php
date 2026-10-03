@@ -62,8 +62,7 @@ $allPets = $hewanModel->readAll()->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kasir Hibrida - <?php echo APP_NAME; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/dynamic.php">
+    <?php require_once 'head_inc.php'; ?>
     <style>
         .pos-layout {
             display: grid;
@@ -162,36 +161,41 @@ $allPets = $hewanModel->readAll()->fetchAll(PDO::FETCH_ASSOC);
         $role = $_SESSION['user_role'];
         require_once 'sidebar.php'; 
         ?>
-        <main class="main-content" style="padding: 15px 25px;">
-            <header class="top-nav" style="margin-bottom: 15px;">
-                <h1>🛒 Kasir POS Hibrida (Ritel & Layanan Grooming)</h1>
-                <div class="user-info">
-                    <div class="user-details">
-                        <div class="user-name"><?php echo htmlspecialchars($_SESSION['nama_lengkap'] ?? $_SESSION['username']); ?></div>
-                        <div class="user-role"><?php echo ucfirst($_SESSION['user_role']); ?></div>
+        <main class="main-content">
+            <?php require_once 'topbar.php'; ?>
+
+            <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="bi bi-cart3"></i> Kasir POS Hibrida</h1>
+                        <div class="breadcrumb-nav">Transaksi Ritel Produk Hewan, Eceran Repack & Layanan Grooming</div>
+                    </div>
+                    <div class="page-actions">
+                        <a href="repack.php" class="btn btn-sm btn-secondary"><i class="bi bi-boxes"></i> Konversi Repack</a>
+                        <a href="antrean_grooming.php" class="btn btn-sm btn-secondary"><i class="bi bi-scissors"></i> Antrean Grooming</a>
+                        <a href="booking_inap.php" class="btn btn-sm btn-secondary"><i class="bi bi-building"></i> Pet Hotel</a>
                     </div>
                 </div>
-            </header>
 
-            <?php if ($message): ?>
-                <div class="alert alert-<?php echo $message_type; ?>">
-                    <?php echo $message; ?>
-                </div>
-            <?php endif; ?>
+                <?php if ($message): ?>
+                    <div class="alert alert-<?php echo $message_type; ?>">
+                        <?php echo $message; ?>
+                    </div>
+                <?php endif; ?>
 
             <div class="pos-layout">
                 <!-- SISI KIRI: KATALOG PRODUK & JASA -->
                 <div class="catalog-container">
                     <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-                        <input type="text" id="searchBox" class="form-control" placeholder="🔍 Cari nama barang, pakan, atau paket jasa..." oninput="searchProducts(this.value)">
+                        <input type="text" id="searchBox" class="form-control" placeholder="Cari nama barang, pakan, barcode, atau paket jasa..." oninput="searchProducts(this.value)">
                     </div>
 
                     <div class="filter-tabs">
                         <button type="button" class="filter-pill active" data-type="all" onclick="filterProducts('all')">Semua Item</button>
                         <button type="button" class="filter-pill" data-type="retail" onclick="filterProducts('retail')">Pakan & Ritel</button>
                         <button type="button" class="filter-pill" data-type="repack" onclick="filterProducts('repack')">Repack Eceran</button>
-                        <button type="button" class="filter-pill" data-type="jasa" onclick="filterProducts('jasa')">✂️ Layanan Grooming</button>
-                        <button type="button" class="filter-pill" data-type="kandang" onclick="filterProducts('kandang')">🏨 Fasilitas Inap</button>
+                        <button type="button" class="filter-pill" data-type="jasa" onclick="filterProducts('jasa')"><i class="bi bi-scissors"></i> Layanan Grooming</button>
+                        <button type="button" class="filter-pill" data-type="kandang" onclick="filterProducts('kandang')"><i class="bi bi-building"></i> Fasilitas Inap</button>
                     </div>
 
                     <div class="product-grid" id="productGrid">
@@ -308,16 +312,18 @@ $allPets = $hewanModel->readAll()->fetchAll(PDO::FETCH_ASSOC);
                             <div style="display: flex; gap: 8px;">
                                 <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="clearCart()">Batal</button>
                                 <button type="submit" class="btn btn-success" style="flex: 2; font-weight: bold; font-size: 1rem;">
-                                    💰 Bayar & Cetak Nota
+                                    <i class="bi bi-printer"></i> Bayar & Cetak Nota
                                 </button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
+            </div>
         </main>
     </div>
 
+    <script src="assets/js/adminator.js"></script>
     <script src="assets/js/kasir.js"></script>
     <script>
         const allPetsData = <?php echo json_encode($allPets); ?>;

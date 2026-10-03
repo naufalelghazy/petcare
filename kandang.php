@@ -53,8 +53,7 @@ $stats = $kandangModel->getOccupancyStats();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Kandang - <?php echo APP_NAME; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/dynamic.php">
+    <?php require_once 'head_inc.php'; ?>
 </head>
 <body>
     <div class="main-container">
@@ -63,52 +62,58 @@ $stats = $kandangModel->getOccupancyStats();
         require_once 'sidebar.php'; 
         ?>
         <main class="main-content">
-            <header class="top-nav">
-                <h1>🏠 Fasilitas Kamar & Kandang Pet Hotel</h1>
-                <div class="user-info">
-                    <div class="user-details">
-                        <div class="user-name"><?php echo htmlspecialchars($_SESSION['nama_lengkap'] ?? $_SESSION['username']); ?></div>
-                        <div class="user-role"><?php echo ucfirst($_SESSION['user_role']); ?></div>
-                    </div>
-                </div>
-            </header>
+            <?php require_once 'topbar.php'; ?>
 
             <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="bi bi-door-open-fill"></i> Fasilitas Kamar & Kandang</h1>
+                        <div class="breadcrumb-nav">Monitoring Unit Kamar Pet Hotel, Kategori Ukuran & Tarif Sewa</div>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="openAddModal()"><i class="bi bi-plus-lg"></i> Tambah Kamar Baru</button>
+                    </div>
+                </div>
+
                 <?php if ($message): ?>
                     <div class="alert alert-<?php echo $message_type; ?>">
                         <?php echo $message; ?>
                     </div>
                 <?php endif; ?>
 
-                <!-- Stats Overview -->
-                <div class="dashboard-cards" style="margin-bottom: 25px;">
-                    <div class="card">
-                        <div class="card-icon primary">🏠</div>
-                        <div class="card-info">
-                            <h3>Total Unit Kamar</h3>
-                            <p class="card-value"><?php echo $stats['total'] ?? 0; ?> Unit</p>
+                <!-- Stats Overview (Adminator Spec 4.3) -->
+                <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr) !important; margin-bottom: 25px;">
+                    <div class="stat-card card-primary">
+                        <div class="stat-icon bg-primary-soft">
+                            <i class="bi bi-door-closed-fill"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Total Unit Kamar</span>
+                            <div class="stat-value"><?php echo $stats['total'] ?? 0; ?> Unit</div>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-icon success">✅</div>
-                        <div class="card-info">
-                            <h3>Kamar Tersedia</h3>
-                            <p class="card-value"><?php echo $stats['tersedia'] ?? 0; ?> Unit</p>
+                    <div class="stat-card card-success">
+                        <div class="stat-icon bg-success-soft">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Kamar Tersedia</span>
+                            <div class="stat-value"><?php echo $stats['tersedia'] ?? 0; ?> Unit</div>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-icon warning">🐾</div>
-                        <div class="card-info">
-                            <h3>Kamar Terisi (Tamu)</h3>
-                            <p class="card-value"><?php echo $stats['terisi'] ?? 0; ?> Tamu</p>
+                    <div class="stat-card card-warning">
+                        <div class="stat-icon bg-warning-soft">
+                            <i class="bi bi-heart-fill"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Kamar Terisi (Tamu)</span>
+                            <div class="stat-value"><?php echo $stats['terisi'] ?? 0; ?> Tamu</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="action-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2>Daftar Kamar & Tarif Inap</h2>
-                    <button class="btn btn-primary" onclick="openAddModal()">+ Tambah Kamar Baru</button>
-                </div>
+                <div class="data-card">
+                    <div class="data-card-body" style="padding: 0;">
 
                 <div class="table-responsive">
                     <table class="table">
@@ -157,6 +162,8 @@ $stats = $kandangModel->getOccupancyStats();
                         </tbody>
                     </table>
                 </div>
+                </div>
+            </div>
             </div>
         </main>
     </div>
@@ -235,5 +242,6 @@ $stats = $kandangModel->getOccupancyStats();
             document.getElementById('kandangModal').style.display = 'none';
         }
     </script>
+    <script src="assets/js/adminator.js"></script>
 </body>
 </html>

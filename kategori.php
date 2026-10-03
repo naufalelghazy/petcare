@@ -66,8 +66,8 @@ $stmt = $kategori->readAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kategori barang - <?php echo APP_NAME; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Kategori Barang - <?php echo APP_NAME; ?></title>
+    <?php require_once 'head_inc.php'; ?>
 </head>
 <body>
     <div class="main-container">
@@ -78,31 +78,26 @@ $stmt = $kategori->readAll();
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Top Navigation -->
-            <header class="top-nav">
-                <h1>Kategori barang</h1>
-                <div class="user-info">
-                    <div class="user-avatar">
-                        <?php echo strtoupper(substr($_SESSION['nama_lengkap'], 0, 1)); ?>
-                    </div>
-                    <div class="user-details">
-                        <div class="user-name"><?php echo $_SESSION['nama_lengkap']; ?></div>
-                        <div class="user-role"><?php echo ucfirst($_SESSION['user_role']); ?></div>
-                    </div>
-                </div>
-            </header>
+            <?php require_once 'topbar.php'; ?>
 
             <!-- Content -->
             <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="bi bi-folder2-open"></i> Kategori Produk & Layanan</h1>
+                        <div class="breadcrumb-nav">Klasifikasi Pakan, Aksesoris, Jasa Grooming & Kamar</div>
+                    </div>
+                </div>
+
                 <?php if ($message): ?>
                     <div class="alert alert-<?php echo $message_type; ?>">
                         <?php echo $message; ?>
                     </div>
                 <?php endif; ?>
 
-                <!-- Add Kategori Form -->
-                <div class="form-container">
-                    <h2>Tambah Kategori Baru</h2>
+                <div class="data-card" style="margin-bottom: 25px;">
+                    <div class="data-card-body">
+                        <h2 style="font-size: 1.15rem; margin-top: 0;">Tambah Kategori Baru</h2>
                     <form method="POST">
                         <input type="hidden" name="action" value="create">
                         
@@ -120,13 +115,13 @@ $stmt = $kategori->readAll();
 
                         <button type="submit" class="btn btn-primary">Tambah Kategori</button>
                     </form>
+                    </div>
                 </div>
 
                 <!-- Data Kategori Table -->
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3 class="table-title">Daftar Kategori barang</h3>
-                    </div>
+                <div class="data-card">
+                    <div class="data-card-body" style="padding: 0;">
+                    <div class="table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
@@ -154,6 +149,8 @@ $stmt = $kategori->readAll();
                             <?php endwhile; ?>
                         </tbody>
                     </table>
+                    </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -217,5 +214,6 @@ $stmt = $kategori->readAll();
             }
         }
     </script>
+    <script src="assets/js/adminator.js"></script>
 </body>
 </html>

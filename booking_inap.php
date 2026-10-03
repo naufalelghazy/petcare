@@ -92,8 +92,7 @@ $pets = $hewanModel->readAll()->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservasi Pet Hotel - <?php echo APP_NAME; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/dynamic.php">
+    <?php require_once 'head_inc.php'; ?>
     <style>
         .stay-card {
             background: white;
@@ -136,31 +135,30 @@ $pets = $hewanModel->readAll()->fetchAll(PDO::FETCH_ASSOC);
         require_once 'sidebar.php'; 
         ?>
         <main class="main-content">
-            <header class="top-nav">
-                <h1>🏨 Front-Desk Pet Hotel & Boarding</h1>
-                <div class="user-info">
-                    <div class="user-details">
-                        <div class="user-name"><?php echo htmlspecialchars($_SESSION['nama_lengkap'] ?? $_SESSION['username']); ?></div>
-                        <div class="user-role"><?php echo ucfirst($_SESSION['user_role']); ?></div>
-                    </div>
-                </div>
-            </header>
+            <?php require_once 'topbar.php'; ?>
 
             <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="bi bi-building"></i> Front-Desk Pet Hotel & Boarding</h1>
+                        <div class="breadcrumb-nav">Reservasi Kamar Kandang & Otomasi Denda Overstay Per Jam</div>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="openBookingModal()"><i class="bi bi-plus-lg"></i> Reservasi / Check-In Baru</button>
+                    </div>
+                </div>
+
                 <?php if ($message): ?>
                     <div class="alert alert-<?php echo $message_type; ?>">
                         <?php echo $message; ?>
                     </div>
                 <?php endif; ?>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
-                    <div style="display: flex; gap: 10px;">
-                        <a href="booking_inap.php" class="btn btn-sm <?php echo empty($status_filter) ? 'btn-primary' : 'btn-secondary'; ?>">Semua</a>
-                        <a href="booking_inap.php?status=Check-In" class="btn btn-sm <?php echo ($status_filter === 'Check-In') ? 'btn-primary' : 'btn-secondary'; ?>">Sedang Inap (Aktif)</a>
-                        <a href="booking_inap.php?status=Booking" class="btn btn-sm <?php echo ($status_filter === 'Booking') ? 'btn-primary' : 'btn-secondary'; ?>">Booking Menunggu Masuk</a>
-                        <a href="booking_inap.php?status=Selesai" class="btn btn-sm <?php echo ($status_filter === 'Selesai') ? 'btn-primary' : 'btn-secondary'; ?>">Selesai Checkout</a>
-                    </div>
-                    <button class="btn btn-primary" onclick="openBookingModal()">+ Reservasi / Check-In Baru</button>
+                <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <a href="booking_inap.php" class="btn btn-sm <?php echo empty($status_filter) ? 'btn-primary' : 'btn-secondary'; ?>">Semua</a>
+                    <a href="booking_inap.php?status=Check-In" class="btn btn-sm <?php echo ($status_filter === 'Check-In') ? 'btn-primary' : 'btn-secondary'; ?>">Sedang Inap (Aktif)</a>
+                    <a href="booking_inap.php?status=Booking" class="btn btn-sm <?php echo ($status_filter === 'Booking') ? 'btn-primary' : 'btn-secondary'; ?>">Booking Menunggu Masuk</a>
+                    <a href="booking_inap.php?status=Selesai" class="btn btn-sm <?php echo ($status_filter === 'Selesai') ? 'btn-primary' : 'btn-secondary'; ?>">Selesai Checkout</a>
                 </div>
 
                 <!-- List of Stays -->
@@ -227,8 +225,17 @@ $pets = $hewanModel->readAll()->fetchAll(PDO::FETCH_ASSOC);
                     <?php endwhile; ?>
 
                     <?php if (!$hasStay): ?>
-                    <div style="background: white; padding: 40px; text-align: center; border-radius: 12px; color: #64748b;">
-                        <h3>Tidak ada data inap untuk kriteria ini</h3>
+                    <div class="data-card">
+                        <div class="empty-state">
+                            <i class="bi bi-building-check" style="font-size: 42px; color: #cbd5e1;"></i>
+                            <h4>Tidak Ada Data Rawat Inap</h4>
+                            <p>Belum ada hewan anabul yang terdaftar pada filter reservasi ini.</p>
+                            <div style="margin-top: 16px;">
+                                <button type="button" class="btn btn-primary" onclick="openBookingModal()">
+                                    <i class="bi bi-plus-lg"></i> Check-In / Booking Anabul
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <?php endif; ?>
                 </div>
@@ -407,5 +414,6 @@ $pets = $hewanModel->readAll()->fetchAll(PDO::FETCH_ASSOC);
             return 'Rp ' + Number(num).toLocaleString('id-ID');
         }
     </script>
+    <script src="assets/js/adminator.js"></script>
 </body>
 </html>

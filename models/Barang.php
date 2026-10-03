@@ -234,4 +234,3 @@ class Barang {
         return $stmt;
     }
 }
-?>

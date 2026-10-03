@@ -70,8 +70,7 @@ $customersList = $customerModel->readAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Pelanggan & Hewan - <?php echo APP_NAME; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/dynamic.php">
+    <?php require_once 'head_inc.php'; ?>
     <style>
         .customer-card {
             background: white;
@@ -124,27 +123,24 @@ $customersList = $customerModel->readAll();
         require_once 'sidebar.php'; 
         ?>
         <main class="main-content">
-            <header class="top-nav">
-                <h1>🐶 Master Pelanggan & Profil Rekam Medis Hewan</h1>
-                <div class="user-info">
-                    <div class="user-details">
-                        <div class="user-name"><?php echo htmlspecialchars($_SESSION['nama_lengkap'] ?? $_SESSION['username']); ?></div>
-                        <div class="user-role"><?php echo ucfirst($_SESSION['user_role']); ?></div>
-                    </div>
-                </div>
-            </header>
+            <?php require_once 'topbar.php'; ?>
 
             <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="bi bi-people-fill"></i> Master Pelanggan & Anabul</h1>
+                        <div class="breadcrumb-nav">Data Kontak Pemilik, Riwayat Vaksin & Catatan Khusus Alergi Hewan</div>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="openAddCustomerModal()"><i class="bi bi-person-plus-fill"></i> Registrasi Pelanggan & Anabul</button>
+                    </div>
+                </div>
+
                 <?php if ($message): ?>
                     <div class="alert alert-<?php echo $message_type; ?>">
                         <?php echo $message; ?>
                     </div>
                 <?php endif; ?>
-
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2>Daftar Pemilik & Pasien Terdaftar</h2>
-                    <button class="btn btn-primary" onclick="openAddCustomerModal()">+ Registrasi Pelanggan & Anabul</button>
-                </div>
 
                 <!-- Daftar Pelanggan dan Hewan -->
                 <div class="customer-list">
@@ -359,5 +355,6 @@ $customersList = $customerModel->readAll();
             document.getElementById('addPetModal').style.display = 'none';
         }
     </script>
+    <script src="assets/js/adminator.js"></script>
 </body>
 </html>

@@ -29,8 +29,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Pengadaan Pasokan - <?php echo APP_NAME; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/dynamic.php">
+    <?php require_once 'head_inc.php'; ?>
 </head>
 <body>
     <div class="main-container">
@@ -39,53 +38,59 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         require_once 'sidebar.php'; 
         ?>
         <main class="main-content">
-            <header class="top-nav">
-                <h1>📉 Laporan Pengadaan Pasokan Barang & Pakan</h1>
-                <div class="user-info">
-                    <div class="user-details">
-                        <div class="user-name"><?php echo htmlspecialchars($_SESSION['nama_lengkap'] ?? $_SESSION['username']); ?></div>
-                        <div class="user-role"><?php echo ucfirst($_SESSION['user_role']); ?></div>
-                    </div>
-                </div>
-            </header>
+            <?php require_once 'topbar.php'; ?>
 
             <div class="content">
-                <!-- Filter Section -->
-                <div class="card" style="margin-bottom: 20px;">
-                    <form method="GET" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label for="start_date">Dari Tanggal</label>
-                            <input type="date" id="start_date" name="start_date" value="<?php echo $start_date; ?>" class="form-control" required>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label for="end_date">Sampai Tanggal</label>
-                            <input type="date" id="end_date" name="end_date" value="<?php echo $end_date; ?>" class="form-control" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Filter Periode</button>
-                        <button type="button" onclick="window.print()" class="btn btn-secondary">🖨️ Cetak Rekap</button>
-                    </form>
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="bi bi-graph-down-arrow"></i> Laporan Pengadaan Pasokan Barang & Pakan</h1>
+                        <div class="breadcrumb-nav">Rekapitulasi Belanja Kulakan Supplier & Riwayat Faktur Masuk</div>
+                    </div>
                 </div>
 
-                <!-- Summary Cards -->
-                <div class="dashboard-cards" style="margin-bottom: 25px;">
-                    <div class="card">
-                        <div class="card-icon warning">📥</div>
-                        <div class="card-info">
-                            <h3>Total Belanja Pasokan</h3>
-                            <p class="card-value"><?php echo formatCurrency($total_pembelian); ?></p>
+                <!-- Filter Section -->
+                <div class="data-card" style="margin-bottom: 25px;">
+                    <div class="data-card-body">
+                        <form method="GET" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="start_date">Dari Tanggal</label>
+                                <input type="date" id="start_date" name="start_date" value="<?php echo $start_date; ?>" class="form-control" required>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="end_date">Sampai Tanggal</label>
+                                <input type="date" id="end_date" name="end_date" value="<?php echo $end_date; ?>" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-funnel"></i> Filter Periode</button>
+                            <button type="button" onclick="window.print()" class="btn btn-secondary"><i class="bi bi-printer"></i> Cetak Rekap</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Summary Cards (Adminator Spec 4.3) -->
+                <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr) !important; margin-bottom: 25px;">
+                    <div class="stat-card card-warning">
+                        <div class="stat-icon bg-warning-soft">
+                            <i class="bi bi-truck"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Total Belanja Pasokan</span>
+                            <div class="stat-value"><?php echo formatCurrency($total_pembelian); ?></div>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-icon primary">📦</div>
-                        <div class="card-info">
-                            <h3>Total Faktur Pasokan</h3>
-                            <p class="card-value"><?php echo $total_transaksi; ?> Faktur Masuk</p>
+                    <div class="stat-card card-primary">
+                        <div class="stat-icon bg-primary-soft">
+                            <i class="bi bi-receipt"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Total Faktur Pasokan</span>
+                            <div class="stat-value"><?php echo $total_transaksi; ?> Faktur Masuk</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Laporan Table -->
-                <div class="card">
+                <div class="data-card">
+                    <div class="data-card-body" style="padding: 0;">
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -126,9 +131,11 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                             </tbody>
                         </table>
                     </div>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
+    <script src="assets/js/adminator.js"></script>
 </body>
 </html>

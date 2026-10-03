@@ -110,4 +110,3 @@ class Hewan {
         return $stmt->execute();
     }
 }
-?>

@@ -65,8 +65,7 @@ $allRetailItems = $barangModel->getRetailAndRepack();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Stok Pakan & Ritel - <?php echo APP_NAME; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/dynamic.php">
+    <?php require_once 'head_inc.php'; ?>
 </head>
 <body>
     <div class="main-container">
@@ -75,17 +74,20 @@ $allRetailItems = $barangModel->getRetailAndRepack();
         require_once 'sidebar.php'; 
         ?>
         <main class="main-content">
-            <header class="top-nav">
-                <h1>📦 Monitoring & Penyesuaian Stok Gudang</h1>
-                <div class="user-info">
-                    <div class="user-details">
-                        <div class="user-name"><?php echo htmlspecialchars($_SESSION['nama_lengkap'] ?? $_SESSION['username']); ?></div>
-                        <div class="user-role"><?php echo ucfirst($_SESSION['user_role']); ?></div>
-                    </div>
-                </div>
-            </header>
+            <?php require_once 'topbar.php'; ?>
 
             <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="bi bi-boxes"></i> Monitoring & Opname Stok Gudang</h1>
+                        <div class="breadcrumb-nav">Pengawasan Persediaan Ritel, Repack & Koreksi Stok Fisik</div>
+                    </div>
+                    <div class="page-actions">
+                        <a href="repack.php" class="btn btn-sm btn-secondary"><i class="bi bi-box-seam"></i> Konversi Repack</a>
+                        <a href="pembelian.php" class="btn btn-sm btn-secondary"><i class="bi bi-truck"></i> Pengadaan Pasokan</a>
+                    </div>
+                </div>
+
                 <?php if ($message): ?>
                     <div class="alert alert-<?php echo $message_type; ?>">
                         <?php echo $message; ?>
@@ -94,8 +96,9 @@ $allRetailItems = $barangModel->getRetailAndRepack();
 
                 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 25px;">
                     <!-- Filter Section -->
-                    <div class="card">
-                        <h3 style="margin-top: 0; font-size: 1.1rem;">🔍 Filter Inventori</h3>
+                    <div class="data-card">
+                        <div class="data-card-body">
+                            <h3 style="margin-top: 0; font-size: 1.1rem;"><i class="bi bi-funnel text-primary"></i> Filter Inventori</h3>
                         <form method="GET" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
                             <div class="form-group" style="margin-bottom: 0; flex: 1;">
                                 <label for="filter">Status Kategori Stok</label>
@@ -114,46 +117,50 @@ $allRetailItems = $barangModel->getRetailAndRepack();
                             <button type="submit" class="btn btn-primary">Filter</button>
                             <a href="stok.php" class="btn btn-secondary">Reset</a>
                         </form>
+                        </div>
                     </div>
 
                     <!-- Stock Adjustment Form -->
-                    <div class="card">
-                        <h3 style="margin-top: 0; font-size: 1.1rem;">⚖️ Koreksi / Opname Stok</h3>
-                        <form method="POST">
-                            <input type="hidden" name="action" value="adjust_stock">
-                            
-                            <div class="form-group" style="margin-bottom: 10px;">
-                                <label for="barang_id">Pilih Produk</label>
-                                <select id="barang_id" name="barang_id" required class="form-control">
-                                    <option value="">-- Pilih Barang --</option>
-                                    <?php while ($row = $allRetailItems->fetch(PDO::FETCH_ASSOC)): ?>
-                                        <option value="<?php echo $row['id_barang']; ?>">
-                                            <?php echo htmlspecialchars($row['nama_barang']); ?> (Stok: <?php echo $row['stok']; ?>)
-                                        </option>
-                                    <?php endwhile; ?>
-                                </select>
-                            </div>
+                    <div class="data-card">
+                        <div class="data-card-body">
+                            <h3 style="margin-top: 0; font-size: 1.1rem;">⚖️ Koreksi / Opname Stok</h3>
+                            <form method="POST">
+                                <input type="hidden" name="action" value="adjust_stock">
+                                
+                                <div class="form-group" style="margin-bottom: 10px;">
+                                    <label for="barang_id">Pilih Produk</label>
+                                    <select id="barang_id" name="barang_id" required class="form-control">
+                                        <option value="">-- Pilih Barang --</option>
+                                        <?php while ($row = $allRetailItems->fetch(PDO::FETCH_ASSOC)): ?>
+                                            <option value="<?php echo $row['id_barang']; ?>">
+                                                <?php echo htmlspecialchars($row['nama_barang']); ?> (Stok: <?php echo $row['stok']; ?>)
+                                            </option>
+                                        <?php endwhile; ?>
+                                    </select>
+                                </div>
 
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-                                <div class="form-group">
-                                    <label for="adjustment">Selisih (+/-)</label>
-                                    <input type="number" id="adjustment" name="adjustment" required 
-                                           placeholder="+10 atau -5" class="form-control" step="1">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                                    <div class="form-group">
+                                        <label for="adjustment">Selisih (+/-)</label>
+                                        <input type="number" id="adjustment" name="adjustment" required 
+                                               placeholder="+10 atau -5" class="form-control" step="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reason">Alasan</label>
+                                        <input type="text" id="reason" name="reason" required 
+                                               placeholder="Opname/rusak" class="form-control">
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="reason">Alasan</label>
-                                    <input type="text" id="reason" name="reason" required 
-                                           placeholder="Opname/rusak" class="form-control">
-                                </div>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-primary" style="width: 100%;">Terapkan Penyesuaian</button>
-                        </form>
+                                
+                                <button type="submit" class="btn btn-primary" style="width: 100%;">Terapkan Penyesuaian</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Stock Table -->
-                <div class="card">
+                <div class="data-card">
+                    <div class="data-card-body" style="padding: 0;">
                     <h3 style="margin-top: 0; font-size: 1.15rem;">Daftar Stok Produk Fisik</h3>
                     <div class="table-responsive">
                         <table class="table">
@@ -212,9 +219,11 @@ $allRetailItems = $barangModel->getRetailAndRepack();
                             </tbody>
                         </table>
                     </div>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
+    <script src="assets/js/adminator.js"></script>
 </body>
 </html>

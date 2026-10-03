@@ -146,4 +146,3 @@ class Customer {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-?>

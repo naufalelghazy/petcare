@@ -75,8 +75,7 @@ $pets = $hewanModel->readAll()->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Papan Antrean Grooming - <?php echo APP_NAME; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/dynamic.php">
+    <?php require_once 'head_inc.php'; ?>
     <style>
         .queue-grid {
             display: grid;
@@ -168,34 +167,32 @@ $pets = $hewanModel->readAll()->fetchAll(PDO::FETCH_ASSOC);
         require_once 'sidebar.php'; 
         ?>
         <main class="main-content">
-            <header class="top-nav">
-                <h1>✂️ Papan Antrean & Pengerjaan Grooming</h1>
-                <div class="user-info">
-                    <div class="user-details">
-                        <div class="user-name"><?php echo htmlspecialchars($_SESSION['nama_lengkap'] ?? $_SESSION['username']); ?></div>
-                        <div class="user-role"><?php echo ucfirst($_SESSION['user_role']); ?></div>
-                    </div>
-                </div>
-            </header>
+            <?php require_once 'topbar.php'; ?>
 
             <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="bi bi-scissors"></i> Papan Antrean & Pengerjaan Grooming</h1>
+                        <div class="breadcrumb-nav">Monitoring Alur Pengerjaan & Perhitungan Otomatis Komisi Staf Groomer</div>
+                    </div>
+                    <div class="page-actions">
+                        <?php if ($current_role === 'admin' || $current_role === 'kasir'): ?>
+                        <button class="btn btn-primary" onclick="openAddQueueModal()"><i class="bi bi-plus-lg"></i> Masukkan Antrean Manual</button>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
                 <?php if ($message): ?>
                     <div class="alert alert-<?php echo $message_type; ?>">
                         <?php echo $message; ?>
                     </div>
                 <?php endif; ?>
 
-                <!-- Bar Filter & Tombol Tambah -->
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <a href="antrean_grooming.php?status=aktif" class="btn btn-sm <?php echo ($filter_status === 'aktif') ? 'btn-primary' : 'btn-secondary'; ?>">Sedang Berjalan (Aktif)</a>
-                        <a href="antrean_grooming.php?status=" class="btn btn-sm <?php echo ($filter_status === '') ? 'btn-primary' : 'btn-secondary'; ?>">Semua Riwayat</a>
-                        <a href="antrean_grooming.php?status=Selesai" class="btn btn-sm <?php echo ($filter_status === 'Selesai') ? 'btn-primary' : 'btn-secondary'; ?>">Selesai Hari Ini</a>
-                    </div>
-
-                    <?php if ($current_role === 'admin' || $current_role === 'kasir'): ?>
-                    <button class="btn btn-primary" onclick="openAddQueueModal()">+ Masukkan Antrean Grooming</button>
-                    <?php endif; ?>
+                <!-- Bar Filter Status -->
+                <div style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+                    <a href="antrean_grooming.php?status=aktif" class="btn btn-sm <?php echo ($filter_status === 'aktif') ? 'btn-primary' : 'btn-secondary'; ?>">Sedang Berjalan (Aktif)</a>
+                    <a href="antrean_grooming.php?status=" class="btn btn-sm <?php echo ($filter_status === '') ? 'btn-primary' : 'btn-secondary'; ?>">Semua Riwayat</a>
+                    <a href="antrean_grooming.php?status=Selesai" class="btn btn-sm <?php echo ($filter_status === 'Selesai') ? 'btn-primary' : 'btn-secondary'; ?>">Selesai Hari Ini</a>
                 </div>
 
                 <!-- Grid Antrean Grooming -->
@@ -272,9 +269,19 @@ $pets = $hewanModel->readAll()->fetchAll(PDO::FETCH_ASSOC);
                     <?php endwhile; ?>
 
                     <?php if (!$hasData): ?>
-                    <div style="grid-column: 1 / -1; background: white; padding: 40px; text-align: center; border-radius: 12px; color: #64748b;">
-                        <h3>Tidak ada antrean grooming pada kriteria ini</h3>
-                        <p>Semua hewan telah selesai dimandikan atau belum ada hewan terdaftar di antrean.</p>
+                    <div style="grid-column: 1 / -1;" class="data-card">
+                        <div class="empty-state">
+                            <i class="bi bi-scissors" style="font-size: 42px; color: #cbd5e1;"></i>
+                            <h4>Tidak Ada Antrean Grooming Aktif</h4>
+                            <p>Semua anabul telah selesai dirawat atau belum ada anabul yang didaftarkan ke antrean saat ini.</p>
+                            <?php if ($current_role === 'admin' || $current_role === 'kasir'): ?>
+                            <div style="margin-top: 16px;">
+                                <button type="button" class="btn btn-primary" onclick="openAddQueueModal()">
+                                    <i class="bi bi-plus-lg"></i> Daftarkan Anabul Sekarang
+                                </button>
+                            </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                     <?php endif; ?>
                 </div>
@@ -340,6 +347,7 @@ $pets = $hewanModel->readAll()->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
+    <script src="assets/js/adminator.js"></script>
     <script>
         function openAddQueueModal() {
             document.getElementById('addQueueModal').style.display = 'flex';

@@ -47,8 +47,7 @@ $logsList = $repackModel->readAllLogs();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Konversi Repack Pakan - <?php echo APP_NAME; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/dynamic.php">
+    <?php require_once 'head_inc.php'; ?>
     <style>
         .repack-card {
             background: white;
@@ -81,17 +80,20 @@ $logsList = $repackModel->readAllLogs();
         require_once 'sidebar.php'; 
         ?>
         <main class="main-content">
-            <header class="top-nav">
-                <h1>⚖️ Modul Konversi Repack Pakan & Susut Gram</h1>
-                <div class="user-info">
-                    <div class="user-details">
-                        <div class="user-name"><?php echo htmlspecialchars($_SESSION['nama_lengkap'] ?? $_SESSION['username']); ?></div>
-                        <div class="user-role"><?php echo ucfirst($_SESSION['user_role']); ?></div>
-                    </div>
-                </div>
-            </header>
+            <?php require_once 'topbar.php'; ?>
 
             <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="bi bi-box-seam-fill"></i> Modul Konversi Repack Pakan</h1>
+                        <div class="breadcrumb-nav">Pecah Karung Sak Pakan ke Eceran & Pencatatan Susut Gram</div>
+                    </div>
+                    <div class="page-actions">
+                        <a href="barang.php" class="btn btn-sm btn-secondary"><i class="bi bi-tags"></i> Master Barang</a>
+                        <a href="stok.php" class="btn btn-sm btn-secondary"><i class="bi bi-boxes"></i> Monitoring Stok</a>
+                    </div>
+                </div>
+
                 <?php if ($message): ?>
                     <div class="alert alert-<?php echo $message_type; ?>">
                         <?php echo $message; ?>
@@ -253,5 +255,6 @@ $logsList = $repackModel->readAllLogs();
             document.getElementById('lblSusut').innerText = susut.toLocaleString('id-ID') + ' gr';
         }
     </script>
+    <script src="assets/js/adminator.js"></script>
 </body>
 </html>

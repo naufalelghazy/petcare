@@ -46,14 +46,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Staf - <?php echo APP_NAME; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/dynamic.php">
+    <?php require_once 'head_inc.php'; ?>
 </head>
 <body class="login-page">
     <div class="login-container">
         <div class="login-box">
             <div class="login-header">
-                <div style="font-size: 2.5rem; margin-bottom: 8px;">🐾</div>
+                <div style="width: 54px; height: 54px; border-radius: 14px; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35); margin-bottom: 12px;">
+                    <i class="bi bi-heart-pulse-fill"></i>
+                </div>
                 <h1><?php echo APP_NAME; ?></h1>
                 <p>Masuk ke portal operasional staf internal</p>
             </div>
@@ -76,7 +77,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="password" id="password" name="password" required value="password">
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-full">Masuk ke Sistem</button>
+                <button type="submit" class="btn btn-primary btn-full">
+                    <i class="bi bi-box-arrow-in-right"></i> Masuk ke Sistem
+                </button>
             </form>
 
             <div class="login-footer">
@@ -86,8 +89,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p>• Groomer: <code>groomer1</code></p>
 
                 <div style="margin-top: 15px; padding-top: 12px; border-top: 1px dashed #e2e8f0;">
-                    <a href="portal/index.php" style="color: #0284c7; font-weight: bold; text-decoration: none;">
-                        🌐 Buka Portal Mandiri Pelanggan &rarr;
+                    <a href="portal/index.php" style="color: #0284c7; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="bi bi-globe2"></i> Buka Portal Mandiri Pelanggan &rarr;
                     </a>
                 </div>
             </div>

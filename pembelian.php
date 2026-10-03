@@ -48,8 +48,7 @@ $purchases = $pembelianModel->readAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pengadaan Pasokan - <?php echo APP_NAME; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/dynamic.php">
+    <?php require_once 'head_inc.php'; ?>
 </head>
 <body>
     <div class="main-container">
@@ -58,30 +57,28 @@ $purchases = $pembelianModel->readAll();
         require_once 'sidebar.php'; 
         ?>
         <main class="main-content">
-            <header class="top-nav">
-                <h1>📥 Pengadaan Pasokan Barang & Pakan</h1>
-                <div class="user-info">
-                    <div class="user-details">
-                        <div class="user-name"><?php echo htmlspecialchars($_SESSION['nama_lengkap'] ?? $_SESSION['username']); ?></div>
-                        <div class="user-role"><?php echo ucfirst($_SESSION['user_role']); ?></div>
-                    </div>
-                </div>
-            </header>
+            <?php require_once 'topbar.php'; ?>
 
             <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="bi bi-truck"></i> Pengadaan Pasokan Barang & Pakan</h1>
+                        <div class="breadcrumb-nav">Penerimaan Barang Masuk (Inbound), Faktur Supplier & Update HPP</div>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="openAddModal()"><i class="bi bi-plus-lg"></i> Catat Pasokan Masuk</button>
+                    </div>
+                </div>
+
                 <?php if ($message): ?>
                     <div class="alert alert-<?php echo $message_type; ?>">
                         <?php echo $message; ?>
                     </div>
                 <?php endif; ?>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2>Riwayat Faktur Pengadaan (Inbound Stock)</h2>
-                    <button class="btn btn-primary" onclick="openAddModal()">+ Catat Pasokan Masuk</button>
-                </div>
-
                 <!-- Table Riwayat Pembelian -->
-                <div class="card">
+                <div class="data-card">
+                    <div class="data-card-body" style="padding: 0;">
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -124,6 +121,7 @@ $purchases = $pembelianModel->readAll();
                                 <?php endif; ?>
                             </tbody>
                         </table>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -293,5 +291,6 @@ $purchases = $pembelianModel->readAll();
             return true;
         }
     </script>
+    <script src="assets/js/adminator.js"></script>
 </body>
 </html>

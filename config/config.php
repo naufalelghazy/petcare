@@ -89,4 +89,3 @@ function formatTanggal($date) {
     $time = strtotime($date);
     return date('d/m/Y', $time);
 }
-?>

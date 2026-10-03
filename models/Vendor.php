@@ -90,4 +90,3 @@ class Vendor {
         return $stmt->execute();
     }
 }
-?>

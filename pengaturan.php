@@ -49,8 +49,7 @@ $settings = $pengaturan->getAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pengaturan Sistem - <?php echo APP_NAME; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/dynamic.php">
+    <?php require_once 'head_inc.php'; ?>
 </head>
 <body>
     <div class="main-container">
@@ -59,30 +58,30 @@ $settings = $pengaturan->getAll();
         require_once 'sidebar.php'; 
         ?>
         <main class="main-content">
-            <header class="top-nav">
-                <h1>⚙️ Pengaturan Bisnis & Tampilan Sistem</h1>
-                <div class="user-info">
-                    <div class="user-details">
-                        <div class="user-name"><?php echo htmlspecialchars($_SESSION['nama_lengkap'] ?? $_SESSION['username']); ?></div>
-                        <div class="user-role"><?php echo ucfirst($_SESSION['user_role']); ?></div>
-                    </div>
-                </div>
-            </header>
+            <?php require_once 'topbar.php'; ?>
 
             <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="bi bi-sliders2"></i> Pengaturan Bisnis & Tampilan Sistem</h1>
+                        <div class="breadcrumb-nav">Konfigurasi Toko, Tarif Denda Overstay, Persentase Komisi Groomer & Warna Tema</div>
+                    </div>
+                </div>
+
                 <?php if ($message): ?>
                     <div class="alert alert-<?php echo $message_type; ?>">
                         <?php echo $message; ?>
                     </div>
                 <?php endif; ?>
 
-                <div class="form-container" style="background: white; border-radius: 12px; padding: 25px; border: 1px solid #e2e8f0; max-width: 800px;">
-                    <form method="POST">
-                        <input type="hidden" name="action" value="update">
-                        
-                        <h3 style="margin-top: 0; color: #0284c7; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">
-                            🏢 Informasi PetCare & Toko
-                        </h3>
+                <div class="data-card" style="max-width: 800px;">
+                    <div class="data-card-body" style="padding: 25px;">
+                        <form method="POST">
+                            <input type="hidden" name="action" value="update">
+                            
+                            <h3 style="margin-top: 0; color: #0284c7; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">
+                                🏢 Informasi PetCare & Toko
+                            </h3>
                         <div class="form-group" style="margin-bottom: 15px;">
                             <label for="nama_toko">Nama Usaha / PetCare</label>
                             <input type="text" id="nama_toko" name="nama_toko" class="form-control"
@@ -167,9 +166,11 @@ $settings = $pengaturan->getAll();
                             💾 Simpan Seluruh Pengaturan
                         </button>
                     </form>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
+    <script src="assets/js/adminator.js"></script>
 </body>
 </html>

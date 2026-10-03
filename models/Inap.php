@@ -200,4 +200,3 @@ class Inap {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-?>

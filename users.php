@@ -85,7 +85,7 @@ $stmt = $user->readAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen User - <?php echo APP_NAME; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <?php require_once 'head_inc.php'; ?>
 </head>
 <body>
     <div class="main-container">
@@ -96,22 +96,17 @@ $stmt = $user->readAll();
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Top Navigation -->
-            <header class="top-nav">
-                <h1>Manajemen User</h1>
-                <div class="user-info">
-                    <div class="user-avatar">
-                        <?php echo strtoupper(substr($_SESSION['nama_lengkap'], 0, 1)); ?>
-                    </div>
-                    <div class="user-details">
-                        <div class="user-name"><?php echo $_SESSION['nama_lengkap']; ?></div>
-                        <div class="user-role"><?php echo ucfirst($_SESSION['user_role']); ?></div>
-                    </div>
-                </div>
-            </header>
+            <?php require_once 'topbar.php'; ?>
 
             <!-- Content -->
             <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="bi bi-shield-lock-fill"></i> Manajemen Pengguna & Hak Akses</h1>
+                        <div class="breadcrumb-nav">Kelola Akun Administrator, Kasir POS, dan Staf Groomer</div>
+                    </div>
+                </div>
+
                 <?php if ($message): ?>
                     <div class="alert alert-<?php echo $message_type; ?>">
                         <?php echo $message; ?>
@@ -119,54 +114,55 @@ $stmt = $user->readAll();
                 <?php endif; ?>
 
                 <!-- Add User Form -->
-                <div class="form-container">
-                    <h2>Tambah User Baru</h2>
-                    <form method="POST">
-                        <input type="hidden" name="action" value="create">
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="username">Username</label>
-                                <input type="text" id="username" name="username" required>
+                <div class="data-card" style="margin-bottom: 25px;">
+                    <div class="data-card-body">
+                        <h2 style="font-size: 1.15rem; margin-top: 0;">Tambah Pengguna Baru</h2>
+                        <form method="POST">
+                            <input type="hidden" name="action" value="create">
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" id="username" name="username" required class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" id="password" name="password" required class="form-control">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" id="password" name="password" required>
-                            </div>
-                        </div>
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="nama_lengkap">Nama Lengkap</label>
-                                <input type="text" id="nama_lengkap" name="nama_lengkap" required>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="nama_lengkap">Nama Lengkap</label>
+                                    <input type="text" id="nama_lengkap" name="nama_lengkap" required class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" id="email" name="email" class="form-control">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" id="email" name="email">
-                            </div>
-                        </div>
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="role">Role</label>
-                                <select id="role" name="role" required>
-                                    <option value="">Pilih Role</option>
-                                    <option value="admin">Administrator</option>
-                                    <option value="kasir">Kasir POS</option>
-                                    <option value="groomer">Groomer (Salon Anabul)</option>
-                                </select>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="role">Hak Akses (Role)</label>
+                                    <select id="role" name="role" required class="form-control">
+                                        <option value="">Pilih Role</option>
+                                        <option value="admin">Administrator</option>
+                                        <option value="kasir">Kasir POS</option>
+                                        <option value="groomer">Groomer (Salon Anabul)</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
 
-                        <button type="submit" class="btn btn-primary">Tambah User</button>
-                    </form>
+                            <button type="submit" class="btn btn-primary">Tambah User</button>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- Data User Table -->
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3 class="table-title">Daftar User</h3>
-                    </div>
+                <div class="data-card">
+                    <div class="data-card-body" style="padding: 0;">
+                    <div class="table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
@@ -209,6 +205,8 @@ $stmt = $user->readAll();
                             <?php endwhile; ?>
                         </tbody>
                     </table>
+                    </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -333,5 +331,6 @@ $stmt = $user->readAll();
             }
         }
     </script>
+    <script src="assets/js/adminator.js"></script>
 </body>
 </html>

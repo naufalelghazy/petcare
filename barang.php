@@ -56,8 +56,7 @@ $categories = $kategoriModel->readAll()->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Produk & Layanan - <?php echo APP_NAME; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/dynamic.php">
+    <?php require_once 'head_inc.php'; ?>
 </head>
 <body>
     <div class="main-container">
@@ -66,35 +65,37 @@ $categories = $kategoriModel->readAll()->fetchAll(PDO::FETCH_ASSOC);
         require_once 'sidebar.php'; 
         ?>
         <main class="main-content">
-            <header class="top-nav">
-                <h1>🏷️ Master Produk, Repack & Layanan Jasa</h1>
-                <div class="user-info">
-                    <div class="user-details">
-                        <div class="user-name"><?php echo htmlspecialchars($_SESSION['nama_lengkap'] ?? $_SESSION['username']); ?></div>
-                        <div class="user-role"><?php echo ucfirst($_SESSION['user_role']); ?></div>
-                    </div>
-                </div>
-            </header>
+            <?php require_once 'topbar.php'; ?>
 
             <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="bi bi-tags-fill"></i> Master Produk & Layanan</h1>
+                        <div class="breadcrumb-nav">Kelola Katalog Ritel Karung, Pakan Repack, Jasa Grooming & Kamar</div>
+                    </div>
+                    <div class="page-actions">
+                        <?php if ($role === 'admin'): ?>
+                        <button class="btn btn-primary" onclick="openAddModal()"><i class="bi bi-plus-lg"></i> Tambah Item Baru</button>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
                 <?php if ($message): ?>
                     <div class="alert alert-<?php echo $message_type; ?>">
                         <?php echo $message; ?>
                     </div>
                 <?php endif; ?>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <a href="barang.php" class="btn btn-sm <?php echo empty($tipe_filter) ? 'btn-primary' : 'btn-secondary'; ?>">Semua Tipe</a>
-                        <a href="barang.php?tipe=retail" class="btn btn-sm <?php echo ($tipe_filter === 'retail') ? 'btn-primary' : 'btn-secondary'; ?>">Ritel / Karung</a>
-                        <a href="barang.php?tipe=repack" class="btn btn-sm <?php echo ($tipe_filter === 'repack') ? 'btn-primary' : 'btn-secondary'; ?>">Repack Eceran</a>
-                        <a href="barang.php?tipe=jasa" class="btn btn-sm <?php echo ($tipe_filter === 'jasa') ? 'btn-primary' : 'btn-secondary'; ?>">✂️ Jasa Grooming</a>
-                        <a href="barang.php?tipe=kandang" class="btn btn-sm <?php echo ($tipe_filter === 'kandang') ? 'btn-primary' : 'btn-secondary'; ?>">🏨 Item Kamar</a>
-                    </div>
-                    <?php if ($role === 'admin'): ?>
-                    <button class="btn btn-primary" onclick="openAddModal()">+ Tambah Item Baru</button>
-                    <?php endif; ?>
+                <div style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;">
+                    <a href="barang.php" class="btn btn-sm <?php echo empty($tipe_filter) ? 'btn-primary' : 'btn-secondary'; ?>">Semua Tipe</a>
+                    <a href="barang.php?tipe=retail" class="btn btn-sm <?php echo ($tipe_filter === 'retail') ? 'btn-primary' : 'btn-secondary'; ?>">Ritel / Karung</a>
+                    <a href="barang.php?tipe=repack" class="btn btn-sm <?php echo ($tipe_filter === 'repack') ? 'btn-primary' : 'btn-secondary'; ?>">Repack Eceran</a>
+                    <a href="barang.php?tipe=jasa" class="btn btn-sm <?php echo ($tipe_filter === 'jasa') ? 'btn-primary' : 'btn-secondary'; ?>">✂️ Jasa Grooming</a>
+                    <a href="barang.php?tipe=kandang" class="btn btn-sm <?php echo ($tipe_filter === 'kandang') ? 'btn-primary' : 'btn-secondary'; ?>">🏨 Item Kamar</a>
                 </div>
+
+                <div class="data-card">
+                    <div class="data-card-body" style="padding: 0;">
 
                 <div class="table-responsive">
                     <table class="table">
@@ -155,6 +156,8 @@ $categories = $kategoriModel->readAll()->fetchAll(PDO::FETCH_ASSOC);
                         </tbody>
                     </table>
                 </div>
+                </div>
+            </div>
             </div>
         </main>
     </div>
@@ -265,5 +268,6 @@ $categories = $kategoriModel->readAll()->fetchAll(PDO::FETCH_ASSOC);
             document.getElementById('itemModal').style.display = 'none';
         }
     </script>
+    <script src="assets/js/adminator.js"></script>
 </body>
 </html>
