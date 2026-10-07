@@ -1,7 +1,20 @@
 <?php
 // Konfigurasi umum aplikasi PetCare
 if (!defined('BASE_URL')) {
-    define('BASE_URL', 'http://localhost/petcare/');
+    $env_url = getenv('BASE_URL') ?: ($_ENV['BASE_URL'] ?? null);
+    if (!empty($env_url)) {
+        define('BASE_URL', rtrim($env_url, '/') . '/');
+    } elseif (isset($_SERVER['HTTP_HOST'])) {
+        $proto = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)) ? "https://" : "http://";
+        $script_dir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
+        if (strpos($_SERVER['REQUEST_URI'] ?? '', '/petcare') !== false || strpos($script_dir, '/petcare') !== false) {
+            define('BASE_URL', $proto . $_SERVER['HTTP_HOST'] . '/petcare/');
+        } else {
+            define('BASE_URL', $proto . $_SERVER['HTTP_HOST'] . '/');
+        }
+    } else {
+        define('BASE_URL', 'http://localhost/petcare/');
+    }
 }
 if (!defined('APP_NAME')) {
     define('APP_NAME', 'PetCare POS & Hotel Management');

@@ -26,40 +26,74 @@ echo "<!DOCTYPE html>
 
 echo "<h1>🐾 Instalasi Database - PetCare System</h1>";
 
-// Konfigurasi database
-$host = 'localhost';
-$db_name = 'petcare_db';
-$username = 'root';
-$password = '';
+// Konfigurasi database dinamis (Mendukung Railway & Laragon Lokal)
+$db_url = getenv('MYSQL_URL') ?: (getenv('DATABASE_URL') ?: ($_ENV['MYSQL_URL'] ?? ($_ENV['DATABASE_URL'] ?? null)));
+
+if ($db_url) {
+    $parsed = parse_url($db_url);
+    $host = $parsed['host'] ?? 'localhost';
+    $port = $parsed['port'] ?? 3306;
+    $username = $parsed['user'] ?? 'root';
+    $password = $parsed['pass'] ?? '';
+    $db_name = isset($parsed['path']) ? ltrim($parsed['path'], '/') : 'petcare_db';
+} else {
+    $host = getenv('MYSQLHOST') ?: ($_ENV['MYSQLHOST'] ?? (getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? 'localhost')));
+    $port = getenv('MYSQLPORT') ?: ($_ENV['MYSQLPORT'] ?? (getenv('DB_PORT') ?: ($_ENV['DB_PORT'] ?? 3306)));
+    $db_name = getenv('MYSQLDATABASE') ?: ($_ENV['MYSQLDATABASE'] ?? (getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? 'petcare_db')));
+    $username = getenv('MYSQLUSER') ?: ($_ENV['MYSQLUSER'] ?? (getenv('DB_USER') ?: ($_ENV['DB_USER'] ?? 'root')));
+    
+    $pass_env = getenv('MYSQLPASSWORD');
+    if ($pass_env === false && isset($_ENV['MYSQLPASSWORD'])) {
+        $pass_env = $_ENV['MYSQLPASSWORD'];
+    }
+    if ($pass_env === false) {
+        $pass_env = getenv('DB_PASS');
+        if ($pass_env === false && isset($_ENV['DB_PASS'])) {
+            $pass_env = $_ENV['DB_PASS'];
+        }
+    }
+    $password = ($pass_env !== false && $pass_env !== null) ? $pass_env : '';
+}
 
 try {
-    // Koneksi tanpa database
-    $pdo = new PDO("mysql:host=$host", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Coba koneksi langsung ke target database terlebih dahulu (standar Cloud / Railway)
+    $connected = false;
+    try {
+        $pdo = new PDO("mysql:host=$host;port=$port;dbname=$db_name;charset=utf8mb4", $username, $password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $connected = true;
+        echo "<div class='log-item success'>✅ Terhubung ke MySQL Database ($db_name) di $host:$port!</div>";
+    } catch (PDOException $e) {
+        // Jika database belum ada (umum di Laragon baru), coba buat database
+        $pdo = new PDO("mysql:host=$host;port=$port", $username, $password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->exec("CREATE DATABASE IF NOT EXISTS `$db_name` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+        $pdo->exec("USE `$db_name`");
+        $connected = true;
+        echo "<div class='log-item success'>✅ Database '$db_name' dibuat dan siap digunakan!</div>";
+    }
     
-    echo "<div class='log-item success'>✅ Koneksi ke MySQL Server berhasil!</div>";
-    
-    // Buat database jika belum ada
-    $pdo->exec("CREATE DATABASE IF NOT EXISTS `$db_name` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-    echo "<div class='log-item success'>✅ Database '$db_name' siap digunakan!</div>";
-    
-    // Pilih database
-    $pdo->exec("USE `$db_name`");
-    
-    // Baca dan eksekusi schema SQL
-    $schema_file = __DIR__ . '/database/petcare_schema.sql';
+    // Baca schema SQL (prioritaskan railway_schema.sql jika ada)
+    $schema_file = __DIR__ . '/database/railway_schema.sql';
+    if (!file_exists($schema_file)) {
+        $schema_file = __DIR__ . '/database/petcare_schema.sql';
+    }
     if (!file_exists($schema_file)) {
         throw new Exception("File schema tidak ditemukan di: $schema_file");
     }
     
     $schema = file_get_contents($schema_file);
     
-    // Split per statement dengan regex semi-colon di akhir baris
+    // Split per statement dengan semi-colon
     $statements = array_filter(array_map('trim', explode(";\n", $schema)));
     
     foreach ($statements as $statement) {
         $stmt = trim($statement);
         if (!empty($stmt)) {
+            // Hindari eksekusi CREATE DATABASE / USE jika sedang terhubung ke Railway database khusus
+            if (stripos($stmt, 'CREATE DATABASE') === 0 || stripos($stmt, 'USE ') === 0) {
+                continue;
+            }
             try {
                 $pdo->exec($stmt);
             } catch (PDOException $e) {
@@ -73,7 +107,7 @@ try {
     echo "<div class='log-item success'>✅ Seluruh tabel dan data awal PetCare berhasil diimpor!</div>";
     
     // Validasi instalasi
-    $test_pdo = new PDO("mysql:host=$host;dbname=$db_name", $username, $password);
+    $test_pdo = new PDO("mysql:host=$host;port=$port;dbname=$db_name;charset=utf8mb4", $username, $password);
     $test_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     $userCount = $test_pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
