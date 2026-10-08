@@ -7,15 +7,17 @@ $database = new Database();
 $db = $database->getConnection();
 $pengaturan = new Pengaturan($db);
 
-// Get color settings with defaults (Adminator Palette)
-$warna_primary = $pengaturan->get('warna_primary') ?? '#0284c7';
-$warna_secondary = $pengaturan->get('warna_secondary') ?? '#0369a1';
-$warna_sidebar = $pengaturan->get('warna_sidebar') ?? '#ffffff';
-$warna_sidebar_header = $pengaturan->get('warna_sidebar_header') ?? '#ffffff';
-$warna_success = $pengaturan->get('warna_success') ?? '#10b981';
-$warna_danger = $pengaturan->get('warna_danger') ?? '#ef4444';
-$warna_warning = $pengaturan->get('warna_warning') ?? '#f59e0b';
-$warna_info = $pengaturan->get('warna_info') ?? '#06b6d4';
+// Gunakan 1 query getAll() daripada 8 query terpisah
+$allSettings = $pengaturan->getAll();
+
+$warna_primary = $allSettings['warna_primary'] ?? '#0284c7';
+$warna_secondary = $allSettings['warna_secondary'] ?? '#0369a1';
+$warna_sidebar = $allSettings['warna_sidebar'] ?? '#ffffff';
+$warna_sidebar_header = $allSettings['warna_sidebar_header'] ?? '#ffffff';
+$warna_success = $allSettings['warna_success'] ?? '#10b981';
+$warna_danger = $allSettings['warna_danger'] ?? '#ef4444';
+$warna_warning = $allSettings['warna_warning'] ?? '#f59e0b';
+$warna_info = $allSettings['warna_info'] ?? '#06b6d4';
 
 function hexToRgba($hex, $alpha = 0.15) {
     $hex = str_replace('#', '', $hex);
@@ -31,9 +33,9 @@ function hexToRgba($hex, $alpha = 0.15) {
     return "rgba($r, $g, $b, $alpha)";
 }
 
-header('Content-Type: text/css');
-header('Cache-Control: no-cache, must-revalidate');
-header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
+header('Content-Type: text/css; charset=UTF-8');
+header('Cache-Control: public, max-age=86400'); // Cache di browser selama 24 jam agar tidak request ulang saat pindah menu
+header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
 ?>
 /* Dynamic Adminator Palette Overrides */
 :root {

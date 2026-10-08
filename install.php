@@ -27,7 +27,8 @@ echo "<!DOCTYPE html>
 echo "<h1>🐾 Instalasi Database - PetCare System</h1>";
 
 // Konfigurasi database dinamis (Mendukung Railway & Laragon Lokal)
-$db_url = getenv('MYSQL_URL') ?: (getenv('DATABASE_URL') ?: ($_ENV['MYSQL_URL'] ?? ($_ENV['DATABASE_URL'] ?? null)));
+$db_url = getenv('MYSQL_PRIVATE_URL') ?: (getenv('MYSQL_URL') ?: (getenv('DATABASE_URL') ?: ($_ENV['MYSQL_PRIVATE_URL'] ?? ($_ENV['MYSQL_URL'] ?? ($_ENV['DATABASE_URL'] ?? null)))));
+
 
 if ($db_url) {
     $parsed = parse_url($db_url);

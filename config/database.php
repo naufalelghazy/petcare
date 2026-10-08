@@ -8,35 +8,36 @@ class Database {
     private $conn;
 
     public function __construct() {
-        // 1. Cek jika ada MYSQL_URL atau DATABASE_URL (Railway format URL)
-        $db_url = getenv('MYSQL_URL') ?: (getenv('DATABASE_URL') ?: ($_ENV['MYSQL_URL'] ?? ($_ENV['DATABASE_URL'] ?? null)));
+        $get = function($key) {
+            $val = getenv($key);
+            if ($val !== false && $val !== null && $val !== '') return $val;
+            if (isset($_ENV[$key]) && $_ENV[$key] !== '') return $_ENV[$key];
+            if (isset($_SERVER[$key]) && $_SERVER[$key] !== '') return $_SERVER[$key];
+            return null;
+        };
+
+        // 1. Utamakan MYSQL_PRIVATE_URL (Jaringan internal Railway, latensi < 1ms)
+        $db_url = $get('MYSQL_PRIVATE_URL') ?: ($get('MYSQL_URL') ?: $get('DATABASE_URL'));
         
         if ($db_url) {
             $parsed = parse_url($db_url);
-            $this->host = $parsed['host'] ?? 'localhost';
+            $this->host = $parsed['host'] ?? '127.0.0.1';
             $this->port = $parsed['port'] ?? 3306;
             $this->username = $parsed['user'] ?? 'root';
             $this->password = $parsed['pass'] ?? '';
             $this->db_name = isset($parsed['path']) ? ltrim($parsed['path'], '/') : 'petcare_db';
         } else {
-            // 2. Cek individual variables dari Railway / Environment
-            $this->host = getenv('MYSQLHOST') ?: ($_ENV['MYSQLHOST'] ?? (getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? 'localhost')));
-            $this->port = getenv('MYSQLPORT') ?: ($_ENV['MYSQLPORT'] ?? (getenv('DB_PORT') ?: ($_ENV['DB_PORT'] ?? 3306)));
-            $this->db_name = getenv('MYSQLDATABASE') ?: ($_ENV['MYSQLDATABASE'] ?? (getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? 'petcare_db')));
-            $this->username = getenv('MYSQLUSER') ?: ($_ENV['MYSQLUSER'] ?? (getenv('DB_USER') ?: ($_ENV['DB_USER'] ?? 'root')));
+            // 2. Individual environment variables
+            $this->host = $get('MYSQLHOST') ?: ($get('DB_HOST') ?: '127.0.0.1');
+            $this->port = $get('MYSQLPORT') ?: ($get('DB_PORT') ?: 3306);
+            $this->db_name = $get('MYSQLDATABASE') ?: ($get('DB_NAME') ?: 'petcare_db');
+            $this->username = $get('MYSQLUSER') ?: ($get('DB_USER') ?: 'root');
             
-            // Password bisa berupa string kosong pada instalasi Laragon standar
-            $pass_env = getenv('MYSQLPASSWORD');
-            if ($pass_env === false && isset($_ENV['MYSQLPASSWORD'])) {
-                $pass_env = $_ENV['MYSQLPASSWORD'];
+            $pass = $get('MYSQLPASSWORD');
+            if ($pass === null) {
+                $pass = $get('DB_PASS');
             }
-            if ($pass_env === false) {
-                $pass_env = getenv('DB_PASS');
-                if ($pass_env === false && isset($_ENV['DB_PASS'])) {
-                    $pass_env = $_ENV['DB_PASS'];
-                }
-            }
-            $this->password = ($pass_env !== false && $pass_env !== null) ? $pass_env : '';
+            $this->password = ($pass !== null) ? $pass : '';
         }
     }
 
@@ -51,7 +52,9 @@ class Database {
                 $this->password,
                 array(
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_PERSISTENT => true, // Menggunakan persistent connection agar tidak handshake ulang di tiap request
+                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
                 )
             );
         } catch(PDOException $exception) {
@@ -61,4 +64,3 @@ class Database {
         return $this->conn;
     }
 }
-

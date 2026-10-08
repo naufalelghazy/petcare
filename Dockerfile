@@ -3,8 +3,9 @@ FROM php:8.2-apache
 # Install PDO MySQL driver
 RUN docker-php-ext-install pdo pdo_mysql
 
-# Enable Apache rewrite module
-RUN a2enmod rewrite
+# Enable Apache rewrite, deflate (gzip), headers, and expires modules
+RUN a2enmod rewrite deflate headers expires
+
 
 # Pastikan hanya mpm_prefork yang aktif (mencegah error AH00534: More than one MPM loaded)
 RUN rm -f /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-enabled/mpm_worker.* 2>/dev/null || true && \
